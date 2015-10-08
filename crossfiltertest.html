@@ -18,48 +18,70 @@
 	</head>
 
 	<body>
+		<h1>TTL Value Required to Reach Several Sites in China</h1>
+		<h3>Histogram of TTL Values</h3>
 		<div class="chart"></div>
+		<br />
+		<h3>Sites</h3>
 		<div class="list"></div>
 		<script type="text/javascript">
 			d3.json("gcprobe.json", function(error, jsondata) {
+				// facts
 				var jsfiles = crossfilter(jsondata);
-				var ttlDimension = jsfiles.dimension(function(d) { return d.ttlrequired; });
-				var frequencyMeasure = ttlDimension.group().reduceCount();
-				var result = frequencyMeasure.all();
-				// bar chart
-				d3.select(".chart")
-					.selectAll("div")
-						.data(result)
-					.enter().append("div")
-						.style("width", function(d) { return (d.value+10) + "px"; })
-						.text(function(d) { return d.key; })
-						.on('mouseover', function(d) {
-							this.style.backgroundColor = 'red';
-							ttlDimension.filter(d.key);
-							update();
-						})
-						.on('mouseleave', function(d) {
-							this.style.backgroundColor = 'steelblue';
-							ttlDimension.filterAll();
-							update();
-						});
 
-				// list of domains
+				// dimensions
+				var ttlDimension = jsfiles.dimension(function(d) { return d.ttlrequired; });
 				var domainDimension = jsfiles.dimension(function(d) {
 					var url_parts = d.script.split('/');
 					return url_parts[2];
 				});
-				function update() {
+
+				// bar chart
+				function updateChart() {
+					var frequencyMeasure = ttlDimension.group().reduceCount();
+					var result = frequencyMeasure.all();
+					var c = d3.select(".chart")
+						.selectAll("div")
+							.data(result);
+					c.enter().append("div")
+						.text(function(d) { return d.key; })
+						.on('mouseover', function(d) {
+							this.style.backgroundColor = 'red';
+							ttlDimension.filter(d.key);
+							updateList();
+						})
+						.on('mouseleave', function(d) {
+							this.style.backgroundColor = 'steelblue';
+							ttlDimension.filterAll();
+							updateList();
+						});
+					c.style("width", function(d) { return (d.value+10) + "px"; })
+				};
+
+				// list of domains
+				function updateList() {
 					var domains = domainDimension.group().reduceCount().all().filter(function(d) { return d.value > 0; });
 					domains.forEach(function(d) { console.log(d.key); });
 					var l = d3.select(".list")
 						.selectAll("div")
 							.data(domains);
 					l.enter().append("div")
-						.text(function(d) { return d.key; });
+						.text(function(d) { return d.key; })
+						.on('mouseover', function(d) {
+							this.style.backgroundColor = 'red';
+							domainDimension.filter(d.key);
+							updateChart();
+						})
+						.on('mouseleave', function(d) {
+							this.style.backgroundColor = '';
+							domainDimension.filterAll();
+							updateChart();
+						});
 					l.exit().remove();
 				};
-				update();
+
+				updateChart();
+				updateList();
 			});
 		</script>
 	</body>
