@@ -61,10 +61,9 @@
 				// list of domains
 				function updateList() {
 					var domains = domainDimension.group().reduceCount().all().filter(function(d) { return d.value > 0; });
-					domains.forEach(function(d) { console.log(d.key); });
 					var l = d3.select(".list")
 						.selectAll("div")
-							.data(domains);
+							.data(domains, function(d) { return d.key; });
 					l.enter().append("div")
 						.text(function(d) { return d.key; })
 						.on('mouseover', function(d) {
@@ -72,7 +71,7 @@
 							domainDimension.filter(d.key);
 							updateChart();
 						})
-						.on('mouseleave', function(d) {
+						.on('mouseleave', function() {
 							this.style.backgroundColor = '';
 							domainDimension.filterAll();
 							updateChart();
