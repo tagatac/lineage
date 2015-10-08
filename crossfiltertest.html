@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Crossfilter Test</title>
+		<style>
+			.chart div {
+				font: 10px sans-serif;
+				background-color: steelblue;
+				text-align: right;
+				padding: 3px;
+				margin: 1px;
+				color: white;
+			}
+		</style>
+		<script src="crossfilter.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+	</head>
+
+	<body>
+		<div class="chart"></div>
+		<div class="list"></div>
+		<script type="text/javascript">
+			d3.json("gcprobe.json", function(error, jsondata) {
+				var jsfiles = crossfilter(jsondata);
+				var ttlDimension = jsfiles.dimension(function(d) { return d.ttlrequired; });
+				var frequencyMeasure = ttlDimension.group().reduceCount();
+				var result = frequencyMeasure.all();
+				// bar chart
+				d3.select(".chart")
+					.selectAll("div")
+						.data(result)
+					.enter().append("div")
+						.style("width", function(d) { return (d.value+10) + "px"; })
+						.text(function(d) { return d.key; })
+						.on('mouseover', function(d) {
+							this.style.backgroundColor = 'red';
+							ttlDimension.filter(d.key);
+							update();
+						})
+						.on('mouseleave', function(d) {
+							this.style.backgroundColor = 'steelblue';
+							ttlDimension.filterAll();
+							update();
+						});
+
+				// list of domains
+				var domainDimension = jsfiles.dimension(function(d) {
+					var url_parts = d.script.split('/');
+					return url_parts[2];
+				});
+				function update() {
+					var domains = domainDimension.group().reduceCount().all().filter(function(d) { return d.value > 0; });
+					domains.forEach(function(d) { console.log(d.key); });
+					var l = d3.select(".list")
+						.selectAll("div")
+							.data(domains);
+					l.enter().append("div")
+						.text(function(d) { return d.key; });
+					l.exit().remove();
+				};
+				update();
+			});
+		</script>
+	</body>
+
+</html>
