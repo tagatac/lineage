@@ -48,13 +48,15 @@
 				return url_parts[2];
 			});
 
+			// measures
+			var frequencies = ttlDimension.group().reduceCount().all();
+			var domains = domainDimension.group().reduceCount().all();
+
 			// bar chart
 			function updateChart() {
-				var frequencyMeasure = ttlDimension.group().reduceCount();
-				var result = frequencyMeasure.all();
 				var c = d3.select(".chart")
 					.selectAll("div")
-						.data(result);
+						.data(frequencies);
 				c.enter().append("div")
 					.text(function(d) { return d.key; })
 					.on('click', function(d) {
@@ -68,10 +70,10 @@
 
 			// list of domains
 			function updateList() {
-				var domains = domainDimension.group().reduceCount().all().filter(function(d) { return d.value > 0; });
+				var filteredDomains = domains.filter(function(d) { return d.value > 0; });
 				var l = d3.select(".list")
 					.selectAll("div")
-						.data(domains, function(d) { return d.key; });
+						.data(filteredDomains, function(d) { return d.key; });
 				l.enter().append("div")
 					.text(function(d) { return d.key; })
 					.on('click', function(d) {
