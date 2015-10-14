@@ -19,70 +19,87 @@
 
 	<body>
 		<h1>TTL Value Required to Reach Several Sites in China</h1>
-		<h3>Histogram of TTL Values</h3>
-		<div class="chart"></div>
-		<br />
-		<h3>Sites</h3>
-		<div class="list"></div>
-		<script type="text/javascript">
-			d3.json("gcprobe.json", function(error, jsondata) {
-				// facts
-				var jsfiles = crossfilter(jsondata);
-
-				// dimensions
-				var ttlDimension = jsfiles.dimension(function(d) { return d.ttlrequired; });
-				var domainDimension = jsfiles.dimension(function(d) {
-					var url_parts = d.script.split('/');
-					return url_parts[2];
-				});
-
-				// bar chart
-				function updateChart() {
-					var frequencyMeasure = ttlDimension.group().reduceCount();
-					var result = frequencyMeasure.all();
-					var c = d3.select(".chart")
-						.selectAll("div")
-							.data(result);
-					c.enter().append("div")
-						.text(function(d) { return d.key; })
-						.on('mouseover', function(d) {
-							this.style.backgroundColor = 'red';
-							ttlDimension.filter(d.key);
-							updateList();
-						})
-						.on('mouseleave', function(d) {
-							this.style.backgroundColor = 'steelblue';
-							ttlDimension.filterAll();
-							updateList();
-						});
-					c.style("width", function(d) { return (d.value+10) + "px"; })
-				};
-
-				// list of domains
-				function updateList() {
-					var domains = domainDimension.group().reduceCount().all().filter(function(d) { return d.value > 0; });
-					var l = d3.select(".list")
-						.selectAll("div")
-							.data(domains, function(d) { return d.key; });
-					l.enter().append("div")
-						.text(function(d) { return d.key; })
-						.on('mouseover', function(d) {
-							this.style.backgroundColor = 'red';
-							domainDimension.filter(d.key);
-							updateChart();
-						})
-						.on('mouseleave', function() {
-							this.style.backgroundColor = '';
-							domainDimension.filterAll();
-							updateChart();
-						});
-					l.exit().remove();
-				};
-
-				updateChart();
-				updateList();
-			});
-		</script>
+		<table width="100%" style="min-width:900px;">
+			<tr>
+				<td width="49%" valign="top" style="position:fixed; min-width:450px;">
+					<h3>Histogram of TTL Values</h3>
+					<div class="chart"></div>
+					<div style="text-align:center;">
+						<button class="reset">Reset</button>
+					</div>
+				</td>
+				<td width="49%" valign="top">
+					<h3>Sites</h3>
+					<div class="list"></div>
+				</td>
+			</tr>
+		</table>
 	</body>
 
+	<script type="text/javascript">
+		d3.json("gcprobe.json", function(error, jsondata) {
+			// facts
+			var jsfiles = crossfilter(jsondata);
+
+			// dimensions
+			var ttlDimension = jsfiles.dimension(function(d) { return d.ttlrequired; });
+			var domainDimension = jsfiles.dimension(function(d) {
+				var url_parts = d.script.split('/');
+				return url_parts[2];
+			});
+
+			// bar chart
+			function updateChart() {
+				var frequencyMeasure = ttlDimension.group().reduceCount();
+				var result = frequencyMeasure.all();
+				var c = d3.select(".chart")
+					.selectAll("div")
+						.data(result);
+				c.enter().append("div")
+					.text(function(d) { return d.key; })
+					.on('click', function(d) {
+						reset();
+						this.style.backgroundColor = 'red';
+						ttlDimension.filter(d.key);
+						updateList();
+					});
+				c.style("width", function(d) { return (d.value/2.0+10) + "px"; });
+			};
+
+			// list of domains
+			function updateList() {
+				var domains = domainDimension.group().reduceCount().all().filter(function(d) { return d.value > 0; });
+				var l = d3.select(".list")
+					.selectAll("div")
+						.data(domains, function(d) { return d.key; });
+				l.enter().append("div")
+					.text(function(d) { return d.key; })
+					.on('click', function(d) {
+						reset();
+						this.style.backgroundColor = 'red';
+						domainDimension.filter(d.key);
+						updateChart();
+					});
+				l.exit().remove();
+			};
+
+			// reset all filters
+			function reset() {
+				d3.select(".chart")
+					.selectAll("div div")
+						.style('background-color', 'steelblue');
+				ttlDimension.filterAll();
+				d3.select(".list")
+					.selectAll("div div")
+						.style('background-color', '');
+				domainDimension.filterAll();
+				updateChart();
+				updateList();
+			};
+			d3.select('.reset').on('click', function(){reset();});
+
+			updateChart();
+			updateList();
+		});
+	</script>
 </html>
