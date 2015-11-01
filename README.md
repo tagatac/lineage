@@ -1,8 +1,10 @@
 # Crossfilter Test
+## Description
 In order to evaluate the applicability of lineage in optimizing interactive visualizations.
 
 ## Schemas
 ### pgbench_accounts
+```
 pgbench=# \d+ pgbench_accounts;
                        Table "public.pgbench_accounts"
   Column  |     Type      | Modifiers | Storage  | Stats target | Description 
@@ -15,7 +17,9 @@ pgbench=# \d+ pgbench_accounts;
 Indexes:
     "pgbench_accounts_pkey" PRIMARY KEY, btree (aid)
 Options: fillfactor=100
+```
 ### pgbench_tellers
+```
 pgbench=# \d+ pgbench_tellers
                         Table "public.pgbench_tellers"
   Column  |     Type      | Modifiers | Storage  | Stats target | Description 
@@ -28,6 +32,7 @@ pgbench=# \d+ pgbench_tellers
 Indexes:
     "pgbench_tellers_pkey" PRIMARY KEY, btree (tid)
 Options: fillfactor=100
+```
 
 ## Visualizations
 1. Aggregated account balances vs teller's clothing color.
