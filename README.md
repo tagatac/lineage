@@ -5,15 +5,15 @@ In order to evaluate the applicability of lineage in optimizing interactive visu
 ## Schemas
 ### pgbench_accounts
 ```
-pgbench=# \d+ pgbench_accounts;
-                       Table "public.pgbench_accounts"
-  Column  |     Type      | Modifiers | Storage  | Stats target | Description 
-----------+---------------+-----------+----------+--------------+-------------
- aid      | integer       | not null  | plain    |              | 
- bid      | integer       |           | plain    |              | 
- abalance | integer       |           | plain    |              | 
- filler   | character(84) |           | extended |              | 
- tid      | integer       |           | plain    |              | 
+                         Table "public.pgbench_accounts"
+    Column    |     Type      | Modifiers | Storage  | Stats target | Description 
+--------------+---------------+-----------+----------+--------------+-------------
+ aid          | integer       | not null  | plain    |              | 
+ bid          | integer       |           | plain    |              | 
+ abalance     | integer       |           | plain    |              | 
+ filler       | character(84) |           | extended |              | 
+ tid          | integer       |           | plain    |              | 
+ satisfaction | integer       |           | plain    |              | 
 Indexes:
     "pgbench_accounts_pkey" PRIMARY KEY, btree (aid)
 Options: fillfactor=100
