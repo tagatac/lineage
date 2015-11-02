@@ -11,7 +11,6 @@ In order to evaluate the applicability of lineage in optimizing interactive visu
  aid          | integer       | not null  | plain    |              | 
  bid          | integer       |           | plain    |              | 
  abalance     | integer       |           | plain    |              | 
- filler       | character(84) |           | extended |              | 
  tid          | integer       |           | plain    |              | 
  satisfaction | integer       |           | plain    |              | 
 Indexes:
@@ -25,9 +24,6 @@ pgbench=# \d+ pgbench_tellers
   Column  |     Type      | Modifiers | Storage  | Stats target | Description 
 ----------+---------------+-----------+----------+--------------+-------------
  tid      | integer       | not null  | plain    |              | 
- bid      | integer       |           | plain    |              | 
- tbalance | integer       |           | plain    |              | 
- filler   | character(84) |           | extended |              | 
  ccolor   | color         |           | plain    |              | 
 Indexes:
     "pgbench_tellers_pkey" PRIMARY KEY, btree (tid)
