@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.chart div {
+	font: 14px sans-serif;
+	background-color: steelblue;
+	text-align: left;
+	padding: 3px;
+	margin: 1px;
+	color: white;
+}
+</style>
+<script>
+</script>
+</head>
+
+<body onload="schart('all');bchart();">
+<!--
+<h1 style="text-align:center;">
+  TTL Value Required to Retrieve Several Javascript Files<br/>
+  From Selected Sites in China
+</h1>
+-->
+<table width="100%" style="min-width:900px;">
+<tr>
+<td width="49%" valign="top" style="min-width:450px;">
+<h3>Average Account Holder Satisfaction by Bank</h3>
+<div class="chart" id="satisfaction"></div>
+<div style="text-align:center;">
+<button class="reset" onclick="schart('all');">Reset</button>
+</div>
+</td>
+<td width="49%" valign="top">
+<h3>Aggregated Account Balances by Assigned Teller's Clothing Color</h3>
+<div class="chart" id="balances"></div>
+</td>
+</tr>
+</table>
+</body>
+
+<script>
+function schart(color) {
+bchartNode = document.getElementById("balances")
+var colors = bchartNode.getElementsByTagName("div")
+for (i = 0; i < colors.length; i++) {colors[i].style.backgroundColor = 'steelblue';}
+if (color != 'all') {document.getElementById(color).style.backgroundColor = 'red';}
+sreq = new XMLHttpRequest();
+sreq.onreadystatechange = function() {
+	if (sreq.readyState == 4 && sreq.status == 200) {
+		document.getElementById("satisfaction").innerHTML = sreq.responseText;
+	}
+}
+sreq.open("GET","satisfaction.php?color="+color,true);
+sreq.send();
+}
+
+function bchart() {
+breq = new XMLHttpRequest();
+breq.onreadystatechange = function() {
+	if (breq.readyState == 4 && breq.status == 200) {
+		document.getElementById("balances").innerHTML = breq.responseText;
+	}
+}
+breq.open("GET","balances.php",true);
+breq.send();
+}
+</script>
+
+</html>
