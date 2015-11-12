@@ -1,8 +1,8 @@
-# Crossfilter Test
+# Implementations of Various Interaction Techniques
 ## Description
 In order to evaluate the applicability of lineage in optimizing interactive visualizations.
 
-## Schemas
+## PGBench Schemas
 ### pgbench_accounts
 ```
                          Table "public.pgbench_accounts"
@@ -29,7 +29,3 @@ Indexes:
     "pgbench_tellers_pkey" PRIMARY KEY, btree (tid)
 Options: fillfactor=100
 ```
-
-## Visualizations
-1. Aggregated account balances vs teller's clothing color.
-2. Average account-holder satisfaction by bank.
