@@ -1,0 +1,86 @@
+{
+	
+	"scales": [
+		{"name": "c"}, // bar index --> color
+		{"name": "idx"}, // x coordinate --> bar index
+		{"name": "xc"}, // x coordinate --> color
+		{"name": "height"} // balance --> bar height
+	],
+
+	"signals": [
+		{"name": "clicked_bar", "stream": "rect:click"},
+		{"name": "reset", "stream": "button:click"}
+	],
+
+	"predicates": [
+		{
+			"name": "is_selected",
+			"type": "in",
+			"item": {"arg": "color"},
+			"data": "selected_bar"
+		}
+	],
+
+	"data": [
+		{
+			"name": "selected_bar",
+			"values": [],
+			"modify": [
+				{
+					"type": "clear",
+					"signal": "reset"
+				},
+				{
+					"type": "clear",
+					"signal": "clicked_bar"
+				},
+				{
+					"type": "insert",
+					"signal": "clicked_bar",
+					"field": "idx"
+				}
+			]
+		}
+	],
+
+	"marks": [
+		{
+			"type": "rect",
+			"name": "barchart",
+			"from": {
+				"data": "accounts_join_tellers",
+				"transform": [
+					{
+						"type": "aggregate",
+						"groupby": ["ccolor"],
+						"summarize": {"abalance": "sum"}
+					}
+				]
+			},
+			"properties": {
+				"enter": {
+					"x": {"scale": {"name": "xc", "inverted": true}, "field": "ccolor"},
+					"y": {"value": 0},
+					"width": {"value": 5},
+					"height": {"scale": "height", "field": "abalance"},
+					"fill": {"value": "steelblue"}
+				},
+				"update": {
+					"fill": {
+						"rule": [
+							{
+								"predicate": {
+									"name": "is_selected",
+									"color": {"field": "ccolor"},
+									"value": "red"
+								}
+							},
+							{"value": "steelblue"}
+						]
+					}
+				}
+			}
+		}
+	]
+
+}
