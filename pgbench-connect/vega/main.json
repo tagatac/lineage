@@ -1,0 +1,7 @@
+{
+
+	"signals": [
+		{"name": "reset", "stream": "button:click"}
+	]
+
+}

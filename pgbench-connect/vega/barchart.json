@@ -8,8 +8,12 @@
 	],
 
 	"signals": [
-		{"name": "clicked_bar", "stream": "rect:click"},
-		{"name": "reset", "stream": "button:click"}
+		{
+			"name": "clicked_bar",
+			"streams": [
+				{"type": "rect:click", "expr": "eventX()", "scale": "idx"}
+			]
+		}
 	],
 
 	"predicates": [
@@ -28,7 +32,7 @@
 			"modify": [
 				{
 					"type": "clear",
-					"signal": "reset"
+					"signal": "main.reset"
 				},
 				{
 					"type": "clear",
@@ -36,7 +40,7 @@
 				},
 				{
 					"type": "insert",
-					"signal": "clicked_bar",
+					"signal": "clicked_bar.idx",
 					"field": "idx"
 				}
 			]
@@ -46,7 +50,7 @@
 	"marks": [
 		{
 			"type": "rect",
-			"name": "barchart",
+			"name": "bars",
 			"from": {
 				"data": "accounts_join_tellers",
 				"transform": [
@@ -71,7 +75,7 @@
 							{
 								"predicate": {
 									"name": "is_selected",
-									"color": {"field": "ccolor"},
+									"input": {"color": {"field": "ccolor"}},
 									"value": "red"
 								}
 							},

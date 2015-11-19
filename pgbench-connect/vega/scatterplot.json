@@ -1,0 +1,47 @@
+{
+
+	"scales": [
+		{"name": "x"}, // balance --> x coordinate
+		{"name": "y"}, // satisfaction --> y coordinate
+	],
+
+	"predicates": [
+		{
+			"name": "is_highlighted",
+			"type": "in",
+			"item": {"arg": "color"},
+			"data": "barchart.selected_bar"
+		}
+	],
+
+	"marks": [
+		{
+			"type": "symbol",
+			"size": 10,
+			"name": "points",
+			"from": {"data": "accounts_join_tellers"},
+			"properties": {
+				"enter": {
+					"x": {"scale": "x", "field": "abalance"},
+					"y": {"scale": "y", "field": "satisfaction"},
+					"fill": {"value": "steelblue"}
+				},
+				"update": {
+					"fill": {
+						"rule": [
+							{
+								"predicate": {
+									"name": "is_highlighted",
+									"input": {"color": {"field": "ccolor"}},
+									"value": "red"
+								}
+							},
+							{"value": "steelblue"}
+						]
+					}
+				}
+			}
+		}
+	]
+
+}
