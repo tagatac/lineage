@@ -52,8 +52,7 @@
 				},
 				{
 					"type": "insert",
-					"signal": "clicked_bar.value",
-					"field": "idx"
+					"signal": "clicked_bar.value"
 				}
 			]
 		}

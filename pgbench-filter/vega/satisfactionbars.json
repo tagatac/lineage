@@ -1,0 +1,65 @@
+{
+
+	"scales": [
+		{
+			"name": "b",
+			"description": "bar index --> bank number"
+		},
+		{
+			"name": "idx",
+			"description": "x coordinate --> bar index"
+		},
+		{
+			"name": "xb",
+			"description": "x coordinate --> bank number"
+		},
+		{
+			"name": "height",
+			"description": "satisfaction --> bar height"
+		}
+	],
+
+	"data": [
+		{
+			"name": "filtered_data",
+			"source": "accounts_join_tellers",
+			"transform": [
+				{
+					"type": "filter",
+					"test": "balancebars.selected_bar.length == 0 || datum.ccolor == balancebars.selected_bar[0]"
+				}
+			]
+		}
+	],
+
+	"marks": [
+		{
+			"type": "rect",
+			"name": "bars",
+			"from": {
+				"data": "filtered_data",
+				"transform": [
+					{
+						"type": "aggregate",
+						"groupby": ["bid"],
+						"summarize": {"satisfaction": "average"}
+					}
+				]
+			},
+			"properties": {
+				"enter": {
+					"x": {"scale": {"name": "xb", "inverted": true}, "field": "bid"},
+					"y": {"value": 0},
+					"width": {"value": 5},
+					"height": {"scale": "height", "field": "satisfaction"},
+					"fill": {"value": "steelblue"}
+				},
+				"update": {
+					"height": {"scale": "height", "field": "satisfaction"}
+				}
+			}
+		}
+	]
+
+
+}
