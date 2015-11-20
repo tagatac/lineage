@@ -1,7 +1,7 @@
 function() {
 var unselected = {
-	//x: [1, 2, 3, 4],
-	//y: [10, 15, 13, 17],
+	marker: {color: 'steelblue'},
+	name: 'unselected',
 
 <?php
 $color = $_GET['color'];
@@ -30,9 +30,10 @@ if ($color == 'all') {
 	}
 	echo "],\n\tmode: 'markers',\n\ttype: 'scatter'\n};\n";
 	echo "var selected = {\tx: [],\n\ty: [],\n";
+
 }
 else {
-	$sql = "SELECT abalance, satisfaction FROM (SELECT a.aid AS aid, a.abalance AS abalance, a.satisfaction AS satisfaction FROM pgbench_accounts a JOIN pgbench_tellers t ON a.tid=t.tid WHERE a.aid<=100 AND t.ccolor=color('{$color}')) accounts_tellers;";
+	$sql = "SELECT abalance, satisfaction FROM (SELECT a.aid AS aid, a.abalance AS abalance, a.satisfaction AS satisfaction FROM pgbench_accounts a JOIN pgbench_tellers t ON a.tid=t.tid WHERE a.aid<=100 AND t.ccolor!=color('{$color}')) accounts_tellers;";
 	$result = pg_query($con,$sql);
 	$ys = array();
 	echo "\tx: [";
@@ -47,8 +48,8 @@ else {
 	}
 	echo "],\n\tmode: 'markers',\n\ttype: 'scatter'\n};\n";
 
-	echo "var selected = {\tx: [],\n\ty: [],\n";
-	$sql = "SELECT abalance, satisfaction FROM (SELECT a.aid AS aid, a.abalance AS abalance, a.satisfaction AS satisfaction FROM pgbench_accounts a JOIN pgbench_tellers t ON a.tid=t.tid WHERE a.aid<=100 AND t.ccolor!=color('{$color}')) accounts_tellers;";
+	echo "var selected = {\n\tmarker: {color: 'red'},\n\tname: 'selected',\n";
+	$sql = "SELECT abalance, satisfaction FROM (SELECT a.aid AS aid, a.abalance AS abalance, a.satisfaction AS satisfaction FROM pgbench_accounts a JOIN pgbench_tellers t ON a.tid=t.tid WHERE a.aid<=100 AND t.ccolor=color('{$color}')) accounts_tellers;";
 	$result = pg_query($con,$sql);
 	$ys = array();
 	echo "\tx: [";
@@ -70,6 +71,6 @@ pg_close($con);
 };
 
 var data = [unselected, selected];
-
-Plotly.newPlot('scatter', data);
+var layout = {showlegend: true};
+Plotly.newPlot('scatter', data, layout);
 }()
