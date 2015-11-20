@@ -1,10 +1,22 @@
 {
-	
+
 	"scales": [
-		{"name": "c"}, // bar index --> color
-		{"name": "idx"}, // x coordinate --> bar index
-		{"name": "xc"}, // x coordinate --> color
-		{"name": "height"} // balance --> bar height
+		{
+			"name": "c",
+			"description": "bar index --> color"
+		},
+		{
+			"name": "idx",
+			"description": "x coordinate --> bar index"
+		},
+		{
+			"name": "xc",
+			"description": "x coordinate --> color"
+		},
+		{
+			"name": "height",
+			"description": "balance --> bar height"
+		}
 	],
 
 	"signals": [

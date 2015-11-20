@@ -1,8 +1,14 @@
 {
 
 	"scales": [
-		{"name": "x"}, // balance --> x coordinate
-		{"name": "y"}, // satisfaction --> y coordinate
+		{
+			"name": "x",
+			"description": "balance --> x coordinate"
+		},
+		{
+			"name": "y",
+			"description": "satisfaction --> y coordinate"
+		}
 	],
 
 	"predicates": [
