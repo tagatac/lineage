@@ -11,7 +11,7 @@
 \definecolor{delim}{RGB}{20,105,176}
 \colorlet{numb}{magenta!60!black}
 \lstdefinelanguage{json}{
-    basicstyle=\scriptsize\ttfamily,
+    basicstyle=\tiny\ttfamily,
     numbers=left,
     numberstyle=\scriptsize,
     stepnumber=1,
@@ -50,7 +50,7 @@
 \copyrightdata{978-1-nnnn-nnnn-n/yy/mm} 
 \doi{nnnnnnn.nnnnnnn}
 
-\title{Faster Interaction Through Lineage}
+\title{Faster Interaction Through Data Lineage}
 
 \authorinfo{David Tagatac\and Eugene Wu}
            {Columbia University}
@@ -75,7 +75,7 @@ This new way of describing interactions is declarative, like Vega~\cite{Satyanar
 It differs from Vega, however, in that it focuses on the relationship between visualizations and tables.
 
 \section{Describing Interactions}
-\subsection{Connected Data Across Views Using SQL\href{http://randy.cs.columbia.edu/lineage/pgbench-connect/pgbench.html}{(\underline{link})}}\label{connect}
+\subsection{Connected Data Across Views Using SQL \href{http://randy.cs.columbia.edu/lineage/pgbench-connect/pgbench.html}{(\underline{link})}}\label{connect}
 \begin{figure}[H]
 	\includegraphics[width=\columnwidth]{figures/connect}
 	\caption{A screenshot of the visualizations described in \autoref{connect}
@@ -83,9 +83,9 @@ It differs from Vega, however, in that it focuses on the relationship between vi
 	\label{fig_connect}
 \end{figure}
 \subsubsection{Vega}
-\subsubsection*{Scatter Plot (left)}
+\subsubsection*{Scatter Plot ($V_1$, left view in Figure~\ref{fig_connect})}
 \lstinputlisting[language=json, tabsize=2, emptylines=0]{../pgbench-connect/vega/scatterplot.json}
-\subsubsection*{Bar Chart (right)}
+\subsubsection*{Bar Chart ($V_2$, right view in Figure~\ref{fig_connect})}
 \lstinputlisting[language=json, tabsize=2, emptylines=0]{../pgbench-connect/vega/barchart.json}
 \subsubsection{Alternative}
 Let $V_1$ be the scatter plot.
@@ -95,17 +95,34 @@ Let $V_2$ be the bar chart.
 	S_1&= \mathlarger{\sigma}_{P_1}(V_1)\\
 	V_2&= \mathlarger{\pi}_{rect}(\mathlarger{\gamma}_{ccolor, \text{SUM}(abalance)}(\bf{accounts}\bowtie{}\bf{tellers}))\\
 	S_2&= \mathlarger{\sigma}_{P_2}(V_2)\\
-	init()&:\\
+	init()/reset()&:\\
 	&: P_1 = P_2 = *\\
-	&: S_2.color = \texttt{steelblue}\\
+	&: S_1.color = S_2.color = \texttt{steelblue}\\
 	click(V_2)&:\\
-	&: P_2 = "\text{WHERE}~ccolor=click.ccolor"\\
-	&: S_2.color = red\\
-	&: P_1 = "\text{WHERE}~aid~\text{IN~lineage}(S_2, \bf{accounts})"\\
+	&: P_2 = ``\text{WHERE}~ccolor=click.ccolor"\\
+	&: S_2.color = \texttt{red}\\
+	&: P_1 = ``\text{WHERE}~aid~\text{IN~lineage}(S_2, \bf{accounts})"\\
 	&: S_1.color = \texttt{red}\\
 \end{align*}
 \subsubsection{Comparison}
-\subsection{Aggregation Filtering Using SQL\href{http://randy.cs.columbia.edu/lineage/pgbench-filter/pgbench.html}{(\underline{link})}}\label{filter}
+\underline{Similarities}:
+\begin{enumerate}
+	\item Both descriptions are partially declarative and partially stateful.
+	\item Both descriptions are event-driven, with state changes propagating up from interaction events to modify intermediate state, and eventually the rendered views (if necessary).
+\end{enumerate}
+\underline{Differences}:
+\begin{enumerate}
+	\item The alternate description is far more succinct than Vega.
+	\item The alternate description leaves out many details.
+		For example:
+		\begin{itemize}
+			\item scaling and position details contained in the projections $\mathlarger{\pi}_{circle}$ and $\mathlarger{\pi}_{rect}$,
+			\item descriptive names for scales, predicates, and marks,
+			\item scaling, position, and signal details corresponding to interaction events (this makes it difficult to specify predicates which depend on those events).
+		\end{itemize}
+	\item The alternate description does not use predicates which take arguments.
+\end{enumerate}
+\subsection{Aggregation Filtering Using SQL \href{http://randy.cs.columbia.edu/lineage/pgbench-filter/pgbench.html}{(\underline{link})}}\label{filter}
 \begin{figure}[H]
 	\includegraphics[width=\columnwidth]{figures/filter}
 	\caption{A screenshot of the visualizations described in \autoref{filter}
@@ -113,9 +130,9 @@ Let $V_2$ be the bar chart.
 	\label{fig_filter}
 \end{figure}
 \subsubsection{Vega}
-\subsubsection*{Satisfaction Bar Chart (left)}
+\subsubsection*{Satisfaction Bar Chart ($V_3$, left view in Figure~\ref{fig_filter})}
 \lstinputlisting[language=json, tabsize=2, emptylines=0]{../pgbench-filter/vega/satisfactionbars.json}
-\subsubsection*{Balance Bar Chart (right)}
+\subsubsection*{Balance Bar Chart ($V_4$, right view in Figure~\ref{fig_filter})}
 \lstinputlisting[language=json, tabsize=2, emptylines=0]{../pgbench-filter/vega/balancebars.json}
 \subsubsection{Alternative}
 \subsubsection{Comparison}
