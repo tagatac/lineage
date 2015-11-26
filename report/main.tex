@@ -1,4 +1,4 @@
-\documentclass[fleqn]{sigplanconf}
+\documentclass[fleqn,reprint]{sigplanconf}
 \usepackage{amsmath,listings,xcolor,hyperref,graphicx,float,relsize}
 \setlength{\mathindent}{0pt}
 \renewcommand{\sectionautorefname}{\S}
@@ -75,7 +75,7 @@ This new way of describing interactions is declarative, like Vega~\cite{Satyanar
 It differs from Vega, however, in that it focuses on the relationship between visualizations and tables.
 
 \section{Describing Interactions}
-\subsection{Connected Data Across Views Using SQL \href{http://randy.cs.columbia.edu/lineage/pgbench-connect/pgbench.html}{(\underline{link})}}\label{connect}
+\subsection{Connected Data Across Views \href{http://randy.cs.columbia.edu/lineage/pgbench-connect/pgbench.html}{(\underline{link})}}\label{connect}
 \begin{figure}[H]
 	\includegraphics[width=\columnwidth]{figures/connect}
 	\caption{A screenshot of the visualizations described in \autoref{connect}
@@ -95,7 +95,8 @@ Let $V_2$ be the bar chart.
 	S_1&= \mathlarger{\pi}_{circle}(\mathlarger{\sigma}_{P_1}(\bf{accounts}))\\
 	V_2&= \mathlarger{\pi}_{rect}(\mathlarger{\gamma}_{ccolor, \text{SUM}(abalance)}(\bf{accounts}\bowtie{}\bf{tellers}))\\
 	S_2&= \mathlarger{\pi}_{rect}(\mathlarger{\gamma}_{ccolor, \text{SUM}(abalance)}(\mathlarger{\sigma}_{P_2}(\bf{accounts}\bowtie{}\bf{tellers})))\\
-	init()/reset()&:\\
+	init()&:\\
+	reset()&:\\
 	&: P_1 = P_2 = *\\
 	&: S_1.color = S_2.color = \texttt{steelblue}\\
 	click(V_2)&:\\
@@ -104,21 +105,41 @@ Let $V_2$ be the bar chart.
 	&: S_1.color = S_2.color = \texttt{red}\\
 \end{align*}
 \subsubsection{Alternative \#2}
-Let $V_1$ be the scatter plot.
-Let $V_2$ be the bar chart.
+The same interaction can be described using a single predicate for both views.
 \begin{align*}
 	V_1&= \mathlarger{\pi}_{circle}(\bf{accounts})\\
 	S_1&= \mathlarger{\pi}_{circle}(\mathlarger{\sigma}_{P_2}(\bf{accounts}\bowtie{}\bf{tellers})))\\
 	V_2&= \mathlarger{\pi}_{rect}(\mathlarger{\gamma}_{ccolor, \text{SUM}(abalance)}(\bf{accounts}\bowtie{}\bf{tellers}))\\
 	S_2&= \mathlarger{\pi}_{rect}(\mathlarger{\gamma}_{ccolor, \text{SUM}(abalance)}(\mathlarger{\sigma}_{P_2}(\bf{accounts}\bowtie{}\bf{tellers})))\\
-	init()/reset()&:\\
+	init()&:\\
+	reset()&:\\
 	&: P_2 = *\\
 	&: S_1.color = S_2.color = \texttt{steelblue}\\
 	click(V_2)&:\\
 	&: P_2 = ``\text{WHERE}~ccolor=click.ccolor"\\
 	&: S_1.color = S_2.color = \texttt{red}\\
 \end{align*}
-\subsection{Aggregation Filtering Using SQL \href{http://randy.cs.columbia.edu/lineage/pgbench-filter/pgbench.html}{(\underline{link})}}\label{filter}
+\subsubsection{Alternative \#3 (expanded to include clicks on $V_1$)}
+\begin{align*}
+	V_1&= \mathlarger{\pi}_{circle}(\bf{accounts})\\
+	S_1&= \mathlarger{\pi}_{circle}(\mathlarger{\sigma}_{P_1}(\bf{accounts}))\\
+	V_2&= \mathlarger{\pi}_{rect}(\mathlarger{\gamma}_{ccolor, \text{SUM}(abalance)}(\bf{accounts}\bowtie{}\bf{tellers}))\\
+	S_2&= \mathlarger{\pi}_{rect}(\mathlarger{\gamma}_{ccolor, \text{SUM}(abalance)}(\\&\mathlarger{\sigma}_{P_2}(\bf{accounts}\bowtie{}\bf{tellers})))\\
+	init()&:\\
+	reset()&:\\
+	&: P_1 = P_2 = *\\
+	&: S_1.color = S_2.color = \texttt{steelblue}\\
+	select(V_1)&:\\
+	&: reset()\\
+	&: P_1 = ``\text{WHERE}~aid~\text{IN}~\mathlarger{\pi}_{\bf{accounts}}(select)"\\
+	&: P_2 = ``\text{WHERE}~ccolor\text{IN~SELECT~DISTINCT}~ccolor~\\&\text{FROM}~\mathlarger{\pi}_{\bf{accounts}\bowtie{}\bf{tellers}}(S_1)"\\
+	click(V_2)&:\\
+	&: reset()\\
+	&: P_2 = ``\text{WHERE}~ccolor=click.ccolor"\\
+	&: P_1 = ``\text{WHERE}~aid~\text{IN~lineage}(S_2, \bf{accounts})"\\
+	&: S_1.color = S_2.color = \texttt{red}\\
+\end{align*}
+\subsection{Aggregation Filtering \href{http://randy.cs.columbia.edu/lineage/pgbench-filter/pgbench.html}{(\underline{link})}}\label{filter}
 \begin{figure}[H]
 	\includegraphics[width=\columnwidth]{figures/filter}
 	\caption{A screenshot of the visualizations described in \autoref{filter}
@@ -138,7 +159,8 @@ Let $V_4$ be the balance bar chart.
 	S_3&= \mathlarger{\pi}_{rect}(\mathlarger{\gamma}_{bid, \text{AVG}(satisfaction)}(\mathlarger{\sigma}_{P_3}(\bf{accounts}\bowtie{}\bf{tellers})))\\
 	V_4&= \mathlarger{\pi}_{rect}(\mathlarger{\gamma}_{ccolor, \text{SUM}(abalance)}(\bf{accounts}\bowtie{}\bf{tellers}))\\
 	S_4&= \mathlarger{\pi}_{rect}(\mathlarger{\gamma}_{ccolor, \text{SUM}(abalance)}(\mathlarger{\sigma}_{P_4}(\bf{accounts}\bowtie{}\bf{tellers})))\\
-	init()/reset()&:\\
+	init()&:\\
+	reset()&:\\
 	&: P_3 = P_4 = *\\
 	&: S_3.color = S_4.color = \texttt{steelblue}\\
 	click(V_4)&:\\
