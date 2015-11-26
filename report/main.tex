@@ -1,5 +1,9 @@
-\documentclass{sigplanconf}
-\usepackage{amsmath,listings,xcolor}
+\documentclass[fleqn]{sigplanconf}
+\usepackage{amsmath,listings,xcolor,hyperref,graphicx,float,relsize}
+
+\renewcommand{\sectionautorefname}{\S}
+\renewcommand{\subsectionautorefname}{\S}
+\renewcommand{\subsubsectionautorefname}{\S}
 
 % from http://tex.stackexchange.com/a/83100
 \colorlet{punct}{red!60!black}
@@ -61,17 +65,62 @@
 % \keywords
 % keyword1, keyword2
 
-\section{Describing Interactions}
-\subsection{Vega}
-\lstinputlisting[language=json, tabsize=2, emptylines=0]{../pgbench-connect/vega/barchart.json}
-\subsection{Alternative}
-\subsection{Comparison}
+\section{Introduction}
+%TODO: more related work references
+Scalability of big data visualization has been the subject of various proposed solutions.
+The majority of these solutions focus on data reduction~\cite{Liu2013}, precomputation~\cite{Liu2013}, occlusion removal, and parallel computation~\cite{Liu2013}.
+We propose a new optimization which uses indexed lineage annotations to reduce the number of queries required for certain interactions.
+In order to accomodate these types of interactions, a new way of describing interactions is necessary.
+This new way of describing interactions is declarative, like Vega~\cite{Satyanarayan}.
+It differs from Vega, however, in that it focuses on the relationship between visualizations and tables.
 
-\bibliographystyle{abbrvnat}
-\begin{thebibliography}{}
-\softraggedright
-\bibitem[Smith et~al.(2009)Smith, Jones]{smith02}
-P. Q. Smith, and X. Y. Jones. ...reference text...
-\end{thebibliography}
+\section{Describing Interactions}
+\subsection{Connected Data Across Views Using SQL\href{http://randy.cs.columbia.edu/lineage/pgbench-connect/pgbench.html}{(\underline{link})}}\label{connect}
+\begin{figure}[H]
+	\includegraphics[width=\columnwidth]{figures/connect}
+	\caption{A screenshot of the visualizations described in \autoref{connect}
+	}
+	\label{fig_connect}
+\end{figure}
+\subsubsection{Vega}
+\subsubsection*{Scatter Plot (left)}
+\lstinputlisting[language=json, tabsize=2, emptylines=0]{../pgbench-connect/vega/scatterplot.json}
+\subsubsection*{Bar Chart (right)}
+\lstinputlisting[language=json, tabsize=2, emptylines=0]{../pgbench-connect/vega/barchart.json}
+\subsubsection{Alternative}
+Let $V_1$ be the scatter plot.
+Let $V_2$ be the bar chart.
+\begin{align*}
+	V_1&= \mathlarger{\pi}_{circle}(\bf{accounts})\\
+	S_1&= \mathlarger{\sigma}_{P_1}(V_1)\\
+	V_2&= \mathlarger{\pi}_{rect}(\mathlarger{\gamma}_{ccolor, \text{SUM}(abalance)}(\bf{accounts}\bowtie{}\bf{tellers}))\\
+	S_2&= \mathlarger{\sigma}_{P_2}(V_2)\\
+	init()&:\\
+	&: P_1 = P_2 = *\\
+	&: S_2.color = \texttt{steelblue}\\
+	click(V_2)&:\\
+	&: P_2 = "\text{WHERE}~ccolor=click.ccolor"\\
+	&: S_2.color = red\\
+	&: P_1 = "\text{WHERE}~aid~\text{IN~lineage}(S_2, \bf{accounts})"\\
+	&: S_1.color = \texttt{red}\\
+\end{align*}
+\subsubsection{Comparison}
+\subsection{Aggregation Filtering Using SQL\href{http://randy.cs.columbia.edu/lineage/pgbench-filter/pgbench.html}{(\underline{link})}}\label{filter}
+\begin{figure}[H]
+	\includegraphics[width=\columnwidth]{figures/filter}
+	\caption{A screenshot of the visualizations described in \autoref{filter}
+	}
+	\label{fig_filter}
+\end{figure}
+\subsubsection{Vega}
+\subsubsection*{Satisfaction Bar Chart (left)}
+\lstinputlisting[language=json, tabsize=2, emptylines=0]{../pgbench-filter/vega/satisfactionbars.json}
+\subsubsection*{Balance Bar Chart (right)}
+\lstinputlisting[language=json, tabsize=2, emptylines=0]{../pgbench-filter/vega/balancebars.json}
+\subsubsection{Alternative}
+\subsubsection{Comparison}
+
+\bibliographystyle{refs}
+\bibliography{refs}
 
 \end{document}
