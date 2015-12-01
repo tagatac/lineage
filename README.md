@@ -29,3 +29,18 @@ Indexes:
     "pgbench_tellers_pkey" PRIMARY KEY, btree (tid)
 Options: fillfactor=100
 ```
+### pgbench_branches
+```
+pgbench=# \d+ pgbench_branches
+                           Table "public.pgbench_branches"
+  Column  |         Type          | Modifiers | Storage  | Stats target | Description 
+----------+-----------------------+-----------+----------+--------------+-------------
+ bid      | integer               | not null  | plain    |              | 
+ bbalance | integer               |           | plain    |              | 
+ filler   | character(88)         |           | extended |              | 
+ coords   | geography(Point,4326) |           | main     |              | 
+Indexes:
+    "pgbench_branches_pkey" PRIMARY KEY, btree (bid)
+    "coords_index" gist (coords)
+Options: fillfactor=100
+```

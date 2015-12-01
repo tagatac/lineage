@@ -7,6 +7,7 @@ MAX_BALANCE = 1000
 MAX_SATISFACTION = 10
 NUM_ACCOUNTS = 1000000
 NUM_TELLERS = 100
+NUM_BRANCHES = 10
 
 conn = psycopg2.connect('dbname={} user={}'.format(DBNAME, DBUSER))
 cur = conn.cursor()
@@ -19,6 +20,11 @@ conn.commit()
 for teller in range(NUM_TELLERS):
 	clothing_color = ('red', 'orange', 'yellow', 'green', 'blue', 'purple', 'white', 'black')[random.randrange(8)]
 	cur.execute("UPDATE pgbench_tellers SET ccolor = color('{}') WHERE tid = {};".format(clothing_color, teller+1))
+conn.commit()
+for branch in range(NUM_BRANCHES):
+	lon = random.random() * 360 - 180
+	lat = random.random() * 180 - 90
+	cur.execute("UPDATE pgbench_branches SET coords = ST_GeographyFromText('SRID=4326;POINT({} {})') WHERE bid = {};".format(lon, lat, branch+1))
 conn.commit()
 cur.close()
 conn.close()

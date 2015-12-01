@@ -26,4 +26,13 @@ with conn:
 		curs.execute("CREATE\040TYPE\040color\040AS\040ENUM\040('red',\040'orange',\040'yellow',\040'green',\040'blue',\040'purple',\040'white',\040'black');")
 		# add a clothing color column to the tellers table
 		curs.execute("ALTER\040TABLE\040pgbench_tellers\040ADD\040ccolor\040color;")
+		# setup postgis
+		curs.execute("CREATE EXTENSION postgis;")
+		curs.execute("CREATE EXTENSION fuzzystrmatch;")
+		curs.execute("CREATE EXTENSION postgis_tiger_geocoder;")
+		curs.execute("CREATE EXTENSION postgis_topology;")
+		# add a geometry column to the branches table
+		curs.execute("ALTER TABLE pgbench_branches ADD COLUMN coords geography(Point,4326);")
+		# setup a spatial index on that column
+		curs.execute("CREATE INDEX coords_index ON pgbench_branches USING GIST (coords);")
 conn.close()
