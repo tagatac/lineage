@@ -1,6 +1,6 @@
 title = Lineage
 date = $(shell date '+%Y%m%d')
-SECTIONS = main intro describing
+SECTIONS = main intro describing discussion
 JPGS = elaborate sparse
 PNGS = connect filter
 

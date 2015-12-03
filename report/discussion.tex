@@ -1,0 +1,8 @@
+\begin{enumerate}
+	\item How can we prove/show that all joins and lightweight aggregations can be optimized with data cubes?
+	\item From the grant proposal: \textit{``For example, consider the brushing-and-linking interaction, where a user selection in one view (e.g, a bar chart) updates the other views (e.g., a scatterplot) to only show the data in the user’s selection. To execute this interaction, the developer must identify the bars that the user has selected, deduce the underlying data records that were used to generate the bars, then recompute the scatter plot on that subset of data. In a complex visualization with many views, managing this process for each view can be tedious and error-prone. In contrast, we note that this can be easily modeled as a data lineage [25, 46, 99] query that first executes backward provenance from the bar chart to access its data lineage, then a forward refresh query to recompute all outputs (views) that are derived from that data. Similar to PI Wu's prior lineage work [99], identifying these common lineage patterns enables the system to speed up the lineage query by e.g., precomputing lineage information and building the appropriate indices."}
+	\begin{itemize}
+		\item Definition of ``lineage patterns"?
+		\item Is this example essentially replacing the filter predicate with actual tuple labels (from indexed lineage)?
+	\end{itemize}
+\end{enumerate}
