@@ -1,8 +1,10 @@
 title = Lineage
 date = $(shell date '+%Y%m%d')
 SECTIONS = main intro describing
+JPGS = elaborate sparse
+PNGS = connect filter
 
-$(date)$(title).pdf : $(SECTIONS:=.tex) refs.bib refs.bst
+$(date)$(title).pdf : $(SECTIONS:=.tex) $(addprefix figures/, $(JPGS:=.jpg)) $(addprefix figures/, $(PNGS:=.png)) refs.bib refs.bst
 	pdflatex -shell-escape -jobname $(date)$(title) main.tex
 	bibtex $(date)$(title)
 	pdflatex -shell-escape -jobname $(date)$(title) main.tex

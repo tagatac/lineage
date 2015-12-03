@@ -197,16 +197,16 @@ This interaction can be indexed with a data cube just as in \autoref{connect_3}.
 			\item scaling, position, and signal details corresponding to interaction events (this makes it difficult to specify predicates which depend on those events).
 		\end{itemize}
 \end{enumerate}
-\subsection{Possible Indicators That Lineage Can Be Used for Optimization}
-\begin{enumerate}
-	\item The same tables are seen in the definitions for two different selection symbols.
-	\item The predicate used to define one selection symbol contains another selection symbol.
-	\item Two selection symbols use the same predicate.
-\end{enumerate}
-\subsection{Possible Indicators That Data Cubes Can Be Used for Optimization}
-\begin{enumerate}
-	\item The same exact mappings of the same tables are seen in the definitions for two different selection symbols.
-\end{enumerate}
+% \subsection{Possible Indicators That Lineage Can Be Used for Optimization}
+% \begin{enumerate}
+% 	\item The same tables are seen in the definitions for two different selection symbols.
+% 	\item The predicate used to define one selection symbol contains another selection symbol.
+% 	\item Two selection symbols use the same predicate.
+% \end{enumerate}
+% \subsection{Possible Indicators That Data Cubes Can Be Used for Optimization}
+% \begin{enumerate}
+% 	\item The same exact mappings of the same tables are seen in the definitions for two different selection symbols.
+% \end{enumerate}
 \subsection{Possible Cases Where Data Cubes CanNOT Be Used for Optimization}
 \begin{enumerate}
 	\item Different aggregations are used in the different views $\Rightarrow$ \textbf{Rejected} (both aggregations can be stored in each cell, and each superaggregate)
@@ -218,9 +218,15 @@ This interaction can be indexed with a data cube just as in \autoref{connect_3}.
 \begin{enumerate}
 	\item To decide what filter to apply to a data cube.
 		\begin{itemize}
-			\item Scenario: A viz spec describes how $V_1$ is related to the data, how $V_2$ is related to the data, and how $V_2$ changes with selections on $V_1$ from a set of options (e.g. ``connected" - certain marks are highlighted in $V_2$, or ``filtered" - unrelated marks are removed from $V_2$).
+			\item Scenario: A viz spec describes how $V_1$ is related to the data, how $V_2$ is related to the data, and how $V_2$ changes with selections on $V_1$ from a set of options (e.g. ``connected" - related marks are highlighted in $V_2$, or ``filtered" - unrelated marks are removed from $V_2$).
 			Now the programmer does not need to specify the predicate for filtering the data cube.
 			The predicate is provided by the lineage of the selection in $V_1$.
+			\item Usefulness Criteria:
+				\begin{enumerate}
+					\item Calculating the lineage is computationally intensive.
+					\item Determining the data cube filter is otherwise logically complex or difficult to describe.
+				\end{enumerate}
 		\end{itemize}
 	\item To decide (immediately) which data tile(s) are needed.
+	\item To decide which attributes/dimensions need to be included in the data cube.
 \end{enumerate}
