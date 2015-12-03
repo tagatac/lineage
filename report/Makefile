@@ -1,6 +1,6 @@
 title = Lineage
 date = $(shell date '+%Y%m%d')
-SECTIONS = main
+SECTIONS = main intro describing
 
 $(date)$(title).pdf : $(SECTIONS:=.tex) refs.bib refs.bst
 	pdflatex -shell-escape -jobname $(date)$(title) main.tex
