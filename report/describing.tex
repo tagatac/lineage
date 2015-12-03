@@ -91,11 +91,17 @@ Let $V_4$ be the balance bar chart.
 	&: P_3 = P_4 = ``\text{WHERE}~ccolor=click.ccolor"\\
 	&: S_3.color = S_4.color = \texttt{red}\\
 \end{align*}
-\subsection{Filter \& Elaborate}
+\subsection{Filter \& Elaborate}\label{elaborate}
+\begin{figure}[H]
+	\includegraphics[width=\columnwidth]{figures/elaborate}
+	\caption{A cartoon of the visualizations described in \autoref{elaborate}
+	}
+	\label{fig_elaborate}
+\end{figure}
 Consider an amendment to the visualization in \autoref{connect_3} wherein the bar chart $V_2$ is replaced by a map showing the branch locations $V_2'$.
 On mousing over any of the branch locations, all colors worn by any of the tellers at that branch are shown in a flyout.
 When some accounts are selected from the scatterplot, only the tellers who manage those accounts are considered.
-\subsubsection{SED}
+\subsubsection{SED \#1}
 Let $V_1$ be the scatter plot.
 Let $V_2'$ be the map.
 \begin{align*}
@@ -112,13 +118,46 @@ Let $V_2'$ be the map.
 	&: P_1 = ``\text{WHERE}~aid~\text{IN}~\mathlarger{\pi}_{\bf{accounts}}(select)"\\
 	&: S_1.color = \texttt{red}\\
 	mouseover(V_2)&:\\
-	&: reset()\\
 	&: P_2' = ``\text{WHERE}~aid~\text{IN}~\mathlarger{\pi}_{\bf{accounts}}(S_1)~\text{AND}\\&bid=\mathlarger{\pi}_{\bf{branches.bid}}(mouseover.star)"\\
 	&: pointer.flyout = \mathlarger{\pi}_{textbox}(S_2')\\
+	&: pointer.flyout.visible = \texttt{true}\\
+	mouseoff(V_2)&:\\
+	&: pointer.flyout.visible = \texttt{false}\\
 \end{align*}
-\subsection{Connect (multiple tellers per account)}
+\subsubsection{SED \#2 (holistic aggregation)}
+Consider a variant of this same visualization with a more complicated aggregation function.
+Namely, the flyout now shows only the most frequently-worn color for the given bank (considering only tellers who manage the selected accounts in $V_1$).
+The complexity of the aggregation function does not affect the applicability of data cubes - only the amount of computation necessary to compute them.
+\begin{align*}
+	V_1&= \mathlarger{\pi}_{circle}(\bf{accounts})\\
+	S_1&= \mathlarger{\pi}_{circle}(\mathlarger{\sigma}_{P_1}(\bf{accounts}))\\
+	V_2'&= \mathlarger{\pi}_{star}(\mathlarger{\gamma}_{ccolor, \text{SUM}(abalance)}(\\&\bf{accounts}\bowtie{}\bf{tellers}))\\
+	S_2'&= \mathlarger{\gamma}_{\text{MostFrequent}(ccolor)}(\mathlarger{\sigma}_{P_2'}(\\&\bf{accounts}\bowtie{}\bf{tellers}\bowtie{}\bf{branches}))\\
+	init()&:\\
+	reset()&:\\
+	&: P_1 = *\\
+	&: S_1.color = \texttt{steelblue}\\
+	select(V_1)&:\\
+	&: reset()\\
+	&: P_1 = ``\text{WHERE}~aid~\text{IN}~\mathlarger{\pi}_{\bf{accounts}}(select)"\\
+	&: S_1.color = \texttt{red}\\
+	mouseover(V_2)&:\\
+	&: P_2' = ``\text{WHERE}~aid~\text{IN}~\mathlarger{\pi}_{\bf{accounts}}(S_1)~\text{AND}\\&bid=\mathlarger{\pi}_{\bf{branches.bid}}(mouseover.star)"\\
+	&: pointer.flyout = \mathlarger{\pi}_{textbox}(S_2')\\
+	&: pointer.flyout.visible = \texttt{true}\\
+	mouseoff(V_2)&:\\
+	&: pointer.flyout.visible = \texttt{false}\\
+\end{align*}
+\subsection{Connect (multiple tellers per account)}\label{sparse}
+\begin{figure}[H]
+	\includegraphics[width=\columnwidth]{figures/sparse}
+	\caption{A cartoon of the visualizations described in \autoref{sparse}
+	}
+	\label{fig_sparse}
+\end{figure}
 Consider an amendment to the visualization in \autoref{connect_3} wherein each account is managed by two tellers.
 In order to associate account records with teller records, a join table named \textbf{accounts\_join\_tellers} is used.
+This interaction can be indexed with a data cube just as in \autoref{connect_3}.
 \subsubsection{SED}
 \begin{align*}
 	V_1&= \mathlarger{\pi}_{circle}(\bf{accounts})\\
@@ -140,8 +179,6 @@ In order to associate account records with teller records, a join table named \t
 	&: P_1 = ``\text{WHERE}~aid~\text{IN~lineage}(S_2, \bf{accounts})"\\
 	&: S_1.color = S_2.color = \texttt{red}\\
 \end{align*}
-\subsubsection{Analysis}
-This interaction can be indexed with a data cube just as in \autoref{connect_3}.
 \subsection{Vega vs. Alternatives}
 \underline{Similarities}:
 \begin{enumerate}
@@ -169,4 +206,21 @@ This interaction can be indexed with a data cube just as in \autoref{connect_3}.
 \subsection{Possible Indicators That Data Cubes Can Be Used for Optimization}
 \begin{enumerate}
 	\item The same exact mappings of the same tables are seen in the definitions for two different selection symbols.
+\end{enumerate}
+\subsection{Possible Cases Where Data Cubes CanNOT Be Used for Optimization}
+\begin{enumerate}
+	\item Different aggregations are used in the different views $\Rightarrow$ \textbf{Rejected} (both aggregations can be stored in each cell, and each superaggregate)
+	\item Using a holistic aggregate $\Rightarrow$ \textbf{Rejected} (the data cube can still hold the aggregate and superaggregate values; they will just take longer to compute)
+	\item Loading new data dynamically $\Rightarrow$ \textbf{Undecided}
+	\item It is impractical to calculate the full data cube, and aggregations must be done dynamically depending on interactions $\Rightarrow$ \textbf{Probably!}
+\end{enumerate}
+\subsection{Possible Uses of Indexed Data Lineage in Interactions}
+\begin{enumerate}
+	\item To decide what filter to apply to a data cube.
+		\begin{itemize}
+			\item Scenario: A viz spec describes how $V_1$ is related to the data, how $V_2$ is related to the data, and how $V_2$ changes with selections on $V_1$ from a set of options (e.g. ``connected" - certain marks are highlighted in $V_2$, or ``filtered" - unrelated marks are removed from $V_2$).
+			Now the programmer does not need to specify the predicate for filtering the data cube.
+			The predicate is provided by the lineage of the selection in $V_1$.
+		\end{itemize}
+	\item To decide (immediately) which data tile(s) are needed.
 \end{enumerate}
