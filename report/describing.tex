@@ -107,7 +107,7 @@ Let $V_2'$ be the map.
 \begin{align*}
 	V_1&= \mathlarger{\pi}_{circle}(\bf{accounts})\\
 	S_1&= \mathlarger{\pi}_{circle}(\mathlarger{\sigma}_{P_1}(\bf{accounts}))\\
-	V_2'&= \mathlarger{\pi}_{star}(\mathlarger{\gamma}_{ccolor, \text{SUM}(abalance)}(\bf{accounts}\bowtie{}\bf{tellers}))\\
+	V_2'&= \mathlarger{\pi}_{star}(\bf{branches})\\
 	S_2'&= \mathlarger{\pi}_{ccolor}(\mathlarger{\sigma}_{P_2'}(\bf{accounts}\bowtie{}\bf{tellers}\bowtie{}\bf{branches}))\\
 	init()&:\\
 	reset()&:\\
@@ -131,7 +131,7 @@ The complexity of the aggregation function does not affect the applicability of 
 \begin{align*}
 	V_1&= \mathlarger{\pi}_{circle}(\bf{accounts})\\
 	S_1&= \mathlarger{\pi}_{circle}(\mathlarger{\sigma}_{P_1}(\bf{accounts}))\\
-	V_2'&= \mathlarger{\pi}_{star}(\mathlarger{\gamma}_{ccolor, \text{SUM}(abalance)}(\\&\bf{accounts}\bowtie{}\bf{tellers}))\\
+	V_2'&= \mathlarger{\pi}_{star}(\bf{branches})\\
 	S_2'&= \mathlarger{\gamma}_{\text{MostFrequent}(ccolor)}(\mathlarger{\sigma}_{P_2'}(\\&\bf{accounts}\bowtie{}\bf{tellers}\bowtie{}\bf{branches}))\\
 	init()&:\\
 	reset()&:\\
