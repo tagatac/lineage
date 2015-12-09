@@ -39,6 +39,23 @@
       {]}{{{\color{delim}{]}}}}{1},
 }
 
+% for proofs
+\usepackage{amsmath,amsthm,amsfonts,amssymb}
+\theoremstyle{plain}
+\theoremstyle{definition}
+\theoremstyle{remark}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{defn}{Definition}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{claim}{Claim}
+\newtheorem{property}{Property}
+\newtheorem*{sketch}{Sketch}
+\newtheorem{remark}{Remark}
+\newtheorem{example}{Example}
+
 \begin{document}
 
 \special{papersize=8.5in,11in}
@@ -50,7 +67,7 @@
 \copyrightdata{978-1-nnnn-nnnn-n/yy/mm} 
 \doi{nnnnnnn.nnnnnnn}
 
-\title{Faster Interaction Through Data Lineage}
+\title{Applications of Data Lineage in Interactive Visualizations}
 \authorinfo{David Tagatac\and Eugene Wu}
            {Columbia University}
            {\{dtagatac,ewu\}@cs.columbia.edu\\\today}
@@ -68,6 +85,9 @@
 
 \section{Describing Interactions}
 \input{describing}
+
+\section{The Universality of Data Cubes}
+\input{cubes}
 
 \section{Discussion/Questions}
 \input{discussion}
