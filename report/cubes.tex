@@ -1,29 +1,39 @@
 Here, we attempt to show that a data cube can be used to effectively index the relevant data for all interactions.
 \subsection{Sketches}
 \begin{claim}\label{alljoins}
-A data cube can be used to effectively index all manners of joins.
+Data cubes can be used to effectively index all manners of natural joins.
 \end{claim}
+
 \begin{sketch}
-Claim~\ref{alljoins} can be shown by induction.
-\subsubsection*{Basis}
-The following joins can be indexed effectively with data cubes:
+Claim~\ref{alljoins} can be shown by induction.\\
+\textbf{Basis}: The following joins can be indexed effectively with data cubes:
 \begin{enumerate}
 	\item $X = A\bowtie{}B$
 \end{enumerate}
-\subsubsection*{Inductive Hypothesis}
-Relation $H$ can be indexed effectively with a data cube.
-\subsubsection*{Inductive Step}
-In joining $H$ and another relation $I$, two possibilities arise.
+\textbf{Inductive Hypothesis}: Relation $H$ can be indexed effectively with a data cube.\\
+\textbf{Inductive Step}: In joining $H$ and another relation $I$, two possibilities arise.
 \begin{enumerate}
 	\item If the schemas of $H$ and $I$ do not share any common attributes, the data cube for $H$ must be expanded to include a new dimension for each attribute in $I$.
 	Note, however, that this situation is unlikely to arise in DataViz as it results in a full cross product, and it does not really reveal anything new, information-theoretically.
 	\item In the more common case, $H$ and $I$ share some attributes to be matched on the join.
-	In this case, the data cube for $H$ must be expanded to include all \textit{new} attributes in $I$.
+	In this case, the data cube for $H$ must be expanded to include all attributes in $I$ which are not present in $H$ (i.e. all of the attributes in $I$ which do not participate in the join).
 \end{enumerate}
-In both cases, the new data cube effectively indexes the join $H\bowtie{}I$.
+In both cases, the new data cube effectively indexes the join \mbox{$H\bowtie{}I$}.
 Noting that multijoins may be achieved commutatively, this inductive step describes joins of arbitrary complexity.
+\end{sketch}
+
+\begin{claim}
+Data cubes can be used to effectively index all manners of interactions (where the data is drawn from a relational database).
+\end{claim}
+
+\begin{sketch}
+Let the set of relations $\{Z_1, Z_2, \ldots, Z_n\}$ be the minimal set of relations representing joins and base tables which see all of the ``interacting" data, where interacting data is all of the data which participates in the interaction.
+If the interaction is defined in terms of queries, this set will be a subset of \{the outermost joins from all of the queries\}.
+From Claim~\ref{alljoins}, we know that each of the relations $Z_k$ can be effectively indexed with a data cube.
 \end{sketch}
 \subsection{Issues}
 \begin{enumerate}
 	\item What if an aggregation is joined with another relation?
+	\item What about outer joins?
+	\item What about 
 \end{enumerate}
